@@ -1,0 +1,44 @@
+import qrcode
+from PIL import Image
+from IPython.display import Image as ColabImage, display
+from google.colab import files
+import ipywidgets as widgets
+from IPython.display import display as ipy_display
+
+def generate_qr_from_url(url):
+    if not url.strip():
+        print("⚠ Please enter a valid URL!")
+        return
+
+    # Generate QR Code for the entered URL
+    qr_img = qrcode.make(url)
+    qr_file = "url_qr_code.png"
+    qr_img.save(qr_file)
+
+    print(f"✅ QR Code generated for URL: {url}")
+    display(ColabImage(qr_file))
+
+    # Download QR Code image
+    files.download(qr_file)
+
+# Create a text box and button (GUI in Colab)
+url_text = widgets.Text(
+    value='',
+    placeholder='Enter the file URL here',
+    description='URL:',
+    disabled=False
+)
+
+generate_button = widgets.Button(
+    description='Generate QR Code',
+    button_style='success'
+)
+
+def on_button_click(b):
+    generate_qr_from_url(url_text.value)
+
+generate_button.on_click(on_button_click)
+
+# Display the widgets
+ipy_display(url_text, generate_button)
+
